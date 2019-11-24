@@ -1,0 +1,187 @@
+# ConfigMap is shared between all standalone cluster, in production each cluster would have their own
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: broker-config
+data:
+  # Tune for available memory. Increase the heap up to 24G to have
+  # better GC behavior at high throughput
+  PULSAR_MEM: '" -Xms128m -Xmx512m -XX:MaxDirectMemorySize=512m"'
+  functionsWorkerEnabled: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alpha
+  labels:
+    app: pulsar
+    component: broker
+spec:
+  ports:
+    - port: 8080
+      name: http
+    - port: 6650
+      name: pulsar
+  clusterIP: None
+  selector:
+    app: pulsar
+    component: broker
+    cluster: gamma
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: beta
+  labels:
+    app: pulsar
+    component: broker
+spec:
+  ports:
+    - port: 8080
+      name: http
+    - port: 6650
+      name: pulsar
+  clusterIP: None
+  selector:
+    app: pulsar
+    component: broker
+    cluster: beta
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gamma
+  labels:
+    app: pulsar
+    component: broker
+spec:
+  ports:
+    - port: 8080
+      name: http
+    - port: 6650
+      name: pulsar
+  clusterIP: None
+  selector:
+    app: pulsar
+    component: broker
+    cluster: gamma
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alpha
+  labels:
+    app: pulsar
+    component: broker
+    cluster: alpha
+spec:
+  containers:
+    - name: broker
+      image: apachepulsar/pulsar-all:latest
+      command: ["sh", "-c"]
+      args:
+        - >
+          bin/apply-config-from-env.py conf/standalone.conf &&
+          bin/gen-yml-from-env.py conf/functions_worker.yml &&
+          bin/pulsar standalone
+      ports:
+        - containerPort: 8080
+        - containerPort: 6650
+      envFrom:
+        - configMapRef:
+            name: broker-config
+      env:
+        - name: advertisedAddress
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: clusterName
+          value: alpha
+        - name: PF_pulsarFunctionsCluster
+          value: alpha
+      volumeMounts:
+        - mountPath: /pulsar/data
+          name: data-volume
+  volumes:
+    - name: data-volume
+      emptyDir: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: beta
+  labels:
+    app: pulsar
+    component: broker
+    cluster: beta
+spec:
+  containers:
+    - name: broker
+      image: apachepulsar/pulsar-all:latest
+      command: ["sh", "-c"]
+      args:
+        - >
+          bin/apply-config-from-env.py conf/standalone.conf &&
+          bin/gen-yml-from-env.py conf/functions_worker.yml &&
+          bin/pulsar standalone
+      ports:
+        - containerPort: 8080
+        - containerPort: 6650
+      envFrom:
+        - configMapRef:
+            name: broker-config
+      env:
+        - name: advertisedAddress
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: clusterName
+          value: beta
+        - name: PF_pulsarFunctionsCluster
+          value: beta
+      volumeMounts:
+        - mountPath: /pulsar/data
+          name: data-volume
+  volumes:
+    - name: data-volume
+      emptyDir: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gamma
+  labels:
+    app: pulsar
+    component: broker
+    cluster: gamma
+spec:
+  containers:
+    - name: broker
+      image: apachepulsar/pulsar-all:latest
+      command: ["sh", "-c"]
+      args:
+        - >
+          bin/apply-config-from-env.py conf/standalone.conf &&
+          bin/gen-yml-from-env.py conf/functions_worker.yml &&
+          bin/pulsar standalone
+      ports:
+        - containerPort: 8080
+        - containerPort: 6650
+      envFrom:
+        - configMapRef:
+            name: broker-config
+      env:
+        - name: advertisedAddress
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: clusterName
+          value: gamma
+        - name: PF_pulsarFunctionsCluster
+          value: gamma
+      volumeMounts:
+        - mountPath: /pulsar/data
+          name: data-volume
+  volumes:
+    - name: data-volume
+      emptyDir: {}
