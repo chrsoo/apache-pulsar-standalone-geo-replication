@@ -109,6 +109,10 @@ Note that in the official Pulsar documentation for [deploying pulsar on Kubernet
 **The next steps assumes that you are running a shell that has been configured with the alias above!**
 
 # Configure geo replication
+To configure [geo replication](https://pulsar.apache.org/docs/en/administration-geo/) we need to
+
+* Tell each standalone cluster (**alpha**, **beta** and **gamma**) that the other clusters exist
+* Configure a tenant (`acme`) and namespace (`acme/test`) that uses all three clusters for replication
 
 1. Configure the **alpha** cluster
 
