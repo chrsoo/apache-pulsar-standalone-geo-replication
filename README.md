@@ -97,7 +97,7 @@ Apache pulsar provides `pulsar-admin` for administration and `pulsar-client` for
 ```
 kubectl -n {namespace} exec {pod} -it -- bin/pulsar-admin
 ```
-To work efficiently it is convenient to alias and the following are assumed from here on:
+To work efficiently it is convenient to use alias and the following are assumed from here on:
 
 * `{cluster}-admin` - adminstration of a cluster
 * `{cluster}-client` - produce/consume messages for a cluster
