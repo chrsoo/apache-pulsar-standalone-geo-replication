@@ -157,6 +157,9 @@ To configure [geo replication](https://pulsar.apache.org/docs/en/administration-
     ```
 
 # Test geo replication
+To test geo replication we create three different consumers, one for each standalone cluster and then produce messages. On successful execution all three consumers should see all messages.
+
+Note that subscriptions are *exclusive* per default but that only applies to consumers within the same cluster.
 
 1. Open three shells and make sure that each shell is initialized with `source alias.sh` or else the alias will not work.
 1. In each shell consume 10 messages on the `acme/test/hello` topic
