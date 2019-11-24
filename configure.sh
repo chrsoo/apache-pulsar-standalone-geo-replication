@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/sh -v
+
+# make sure the alias are present
+source alias.sh
 
 ## configure alpha cluster
 
