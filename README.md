@@ -168,4 +168,4 @@ Note that in the official Pulsar documentation for [deploying pulsar on Kubernet
     ```
     alpha-client produce -n 10 -m hello acme/test/hello
     ```
-1. Verify that each cluster has consumed its ten messages quit!
+1. Verify that each cluster has consumed its ten messages and then exited!
