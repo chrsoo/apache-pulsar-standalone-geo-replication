@@ -135,7 +135,6 @@ Note that in the official Pulsar documentation for [deploying pulsar on Kubernet
 
     beta-admin clusters create --url http://gamma:8080 --broker-url pulsar://gamma:6650 gamma
 
-    clusters alpha, beta and gamma
     beta-admin tenants create --allowed-clusters alpha,beta,gamma acme
 
     beta-admin namespaces create --clusters alpha,beta,gamma acme/test
