@@ -26,7 +26,7 @@ spec:
   selector:
     app: pulsar
     component: broker
-    cluster: gamma
+    cluster: alpha
 ---
 apiVersion: v1
 kind: Service
