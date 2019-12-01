@@ -1,0 +1,10 @@
+# ConfigMap is shared between all standalone cluster, in production each cluster would have their own
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: broker-config
+data:
+  # Tune for available memory. Increase the heap up to 24G to have
+  # better GC behavior at high throughput
+  PULSAR_MEM: '" -Xms128m -Xmx512m -XX:MaxDirectMemorySize=512m"'
+  functionsWorkerEnabled: "true"

@@ -78,18 +78,25 @@ To deploy the clusters run `deploy.sh` - or - do the following manually
 
 1. Define a test namespace `pulsar``
 
-        kubectl create ns pulsar
+        kubectl apply -f spec/namespace.yaml
 
-1. Deploy the cluster in the namespace
+1. Create the config resource shared by all standalone clusters
 
-        kubectl -n pulsar apply -f clusters.yaml
+        kubectl apply -f spec/config.yaml
 
-The `clusters.yaml` file defines the following
+1. Download the [mo](https://github.com/tests-always-included/mo) bash script that replaces [moustache](https://mustache.github.io/) placeholders with envar values
 
-* a shared config used by all clusters
-* the three standalone clusters **alpha**, **beta** and **gamma**
+        curl -sSL https://git.io/get-mo -o mo
+        chmod +x mo
 
-Each standalone cluster consists of a single Kubernetes Service with a matching Pod.
+1. Deploy the **alpha**, **beta** and **gamma** clusters by applying [spec/standalone.yaml] once for each cluster name:
+
+        for cluster in alpha beta gamma
+        do
+          cat spec/standalone.yaml | name=${cluster} ./mo | kubectl -n pulsar apply -f -
+        done
+
+The [spec/standalone.yaml] file defines a Kubernetes Service and Deployment with a `{{name}}` placeholder. If you prefer, you can create three different files and do a `kubectl -n pulsar apply -f {filename}` three times instead.
 
 # Create alias
 Apache pulsar provides `pulsar-admin` for administration and `pulsar-client` for producing and consuming test messages. The  utilities are part of the base pulsar image and can be executed by attaching to the container with `kubectl exec`, for example:
