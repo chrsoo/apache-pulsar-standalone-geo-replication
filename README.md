@@ -5,7 +5,7 @@ In the first attempt I followed the [Kubernetes instructions](https://pulsar.apa
 
 After some fiddling and with the help of the [Pulsar Users mailing list](https://lists.apache.org/list.html?users@pulsar.apache.org) I managed to get it to work. (Thanks to Sijie Guo and Brian Chandler for the help!)
 
-As the configuration was not evident (at least to me) I thought it coudld be intersting to share it, please find the result below!
+As the configuration was not evident (at least to me) I thought it could be intersting to share it, please find the result below!
 
 
 # Prerequisites
